@@ -1,0 +1,149 @@
+{% extends "Account/base.html" %}
+{% load static %}
+{% block title %}Dashboard{% endblock %}
+<!-- is_authenticated -->
+<!-- is_superuser -->
+{% block user %}
+{% if request.user.is_superuser %} {{request.user.username|title}} {% endif %}
+{% endblock %}
+
+{% block body %}
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Dashboard</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+        <div class="row">
+            <div class="col-xl-2 col-md-4">
+                <div class="card bg-primary text-white mb-4">
+                    <div class="card-body">Total Students</div>
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+                        <h1>{{total}}</h1>
+                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2 col-md-4">
+                <div class="card bg-warning text-white mb-4">
+                    <div class="card-body">Present Record</div>
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+                        <h1>{{present}}</h1>
+                        <!-- <a class="small text-white stretched-link" href="#">View Details</a> -->
+                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2 col-md-4">
+                <div class="card bg-success text-white mb-4">
+                    <div class="card-body">Absent Record</div>
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+                        <h1>{{absent}}</h1>
+                        <!-- <a class="small text-white stretched-link" href="#">View Details</a> -->
+                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2 col-md-4">
+                <div class="card bg-danger text-white mb-4">
+                    <div class="card-body">Total Record</div>
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+                        <h1>{{total_record}}</h1>
+                        <!-- <a class="small text-white stretched-link" href="#">View Details</a> -->
+                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2 col-md-4">
+                <div class="card bg-info text-white mb-4">
+                    <div class="card-body">From Date</div>
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+                        <h5>{{start}}</h5>
+                        <!-- <a class="small text-white stretched-link" href="#">View Details</a> -->
+                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2 col-md-4">
+                <div class="card bg-dark text-white mb-4">
+                    <div class="card-body">To Date</div>
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+                        <h5>{{last}}</h5>
+                        <!-- <a class="small text-white stretched-link" href="#">View Details</a> -->
+                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-chart-area me-1"></i>
+                        Area Chart Example
+                    </div>
+                    <div class="card-body"><canvas id="myAreaChart" width="100%" height="40"></canvas></div>
+                </div>
+            </div>
+            <div class="col-xl-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-chart-bar me-1"></i>
+                        Bar Chart Example
+                    </div>
+                    <div class="card-body"><canvas id="myBarChart" width="100%" height="40"></canvas></div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-table me-1"></i>
+                DataTable Example
+            </div>
+            <div class="card-body">
+                <table id="datatablesSimple">
+                    <thead>
+                        <tr>
+                            <th>Student Id</th>
+                            <th>Student Roll</th>
+                            <th>Class</th>
+                            <th>Atandance</th>
+                            <th>Created</th>
+                            <th>Update</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                            <tr>
+                                <th>11</th>
+                                <th>11</th>
+                                <th>Class</th>
+                                <th>Atandance</th>
+                                <th>Created</th>
+                                <th>Update</th>
+                            </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+<script>
+    var table_data = {{ month|safe }};
+    console.log(table_data);
+    var tbody = document.querySelector('#datatablesSimple tbody');
+    var tr = '';
+    for (var i = 0; i < table_data.length; i++) {
+        tr += '<tr>';
+        tr += '<td>' + table_data[i].student_name_id + '</td>';
+        tr += '<td>' + table_data[i].student_roll + '</td>';
+        tr += '<td>' + table_data[i].student_class + '</td>';
+        tr += '<td>' + table_data[i].student_attandance + '</td>';
+        tr += '<td>' + table_data[i].created_at + '</td>';
+        tr += '<td>' + table_data[i].updated_at + '</td>';
+
+        tr += '</tr>';
+    }
+    tbody.innerHTML = tr;
+
+</script>
+{% endblock %}
