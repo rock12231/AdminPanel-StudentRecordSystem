@@ -115,21 +115,6 @@
                     <tbody>
                        
                     </tbody>
-                    <!-- <nav aria-label="...">
-                        <ul class="pagination">
-                            <li class="page-item disabled">
-                                <a class="page-link" href="#" tabindex="-1">Previous</a>
-                            </li>
-                            <li class="page-item"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item active">
-                                <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
-                            </li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">Next</a>
-                            </li>
-                        </ul>
-                    </nav> -->
                 </table>
             </div>
         </div>
@@ -138,9 +123,8 @@
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
 <script>
-    var tabledata = {{month|safe}};
     $('#datatablesSimple').DataTable({
-            data: tabledata,
+            data: {{ month| safe}},
             columns: [
                 { "data": "student_name_id" },
                 { "data": "student_roll" },

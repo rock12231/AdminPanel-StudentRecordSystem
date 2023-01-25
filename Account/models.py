@@ -10,6 +10,6 @@ class StudentAttandance(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
-    def getAllStudentByDate(m,y):
+    def getByMonth(m,y):
         return StudentAttandance.objects.filter(updated_at__month=m,updated_at__year=y)
     

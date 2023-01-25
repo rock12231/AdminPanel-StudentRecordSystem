@@ -26,7 +26,7 @@ class HomeView(LoginRequiredMixin,View):
     redirect_field_name = 'login'
     def get(self, request):
         totalstudent = User.objects.all().exclude(is_superuser=True).count()
-        student = StudentAttandance.getAllStudentByDate(1,2022)
+        student = StudentAttandance.getByMonth(1,2022)
         preset_students = student.filter(student_attandance=True).count()
         absebt_students = student.filter(student_attandance=False).count()
         total_record = preset_students + absebt_students
