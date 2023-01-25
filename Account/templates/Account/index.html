@@ -109,41 +109,47 @@
                             <th>Class</th>
                             <th>Atandance</th>
                             <th>Created</th>
-                            <th>Update</th>
+                            <th>Updated</th>
                         </tr>
                     </thead>
                     <tbody>
-                            <tr>
-                                <th>11</th>
-                                <th>11</th>
-                                <th>Class</th>
-                                <th>Atandance</th>
-                                <th>Created</th>
-                                <th>Update</th>
-                            </tr>
+                       
                     </tbody>
+                    <!-- <nav aria-label="...">
+                        <ul class="pagination">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1">Previous</a>
+                            </li>
+                            <li class="page-item"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item active">
+                                <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
+                            </li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Next</a>
+                            </li>
+                        </ul>
+                    </nav> -->
                 </table>
             </div>
         </div>
     </div>
 </main>
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
 <script>
-    var table_data = {{ month|safe }};
-    console.log(table_data);
-    var tbody = document.querySelector('#datatablesSimple tbody');
-    var tr = '';
-    for (var i = 0; i < table_data.length; i++) {
-        tr += '<tr>';
-        tr += '<td>' + table_data[i].student_name_id + '</td>';
-        tr += '<td>' + table_data[i].student_roll + '</td>';
-        tr += '<td>' + table_data[i].student_class + '</td>';
-        tr += '<td>' + table_data[i].student_attandance + '</td>';
-        tr += '<td>' + table_data[i].created_at + '</td>';
-        tr += '<td>' + table_data[i].updated_at + '</td>';
-
-        tr += '</tr>';
-    }
-    tbody.innerHTML = tr;
-
+    var tabledata = {{month|safe}};
+    $('#datatablesSimple').DataTable({
+            data: tabledata,
+            columns: [
+                { "data": "student_name_id" },
+                { "data": "student_roll" },
+                { "data": "student_class" },
+                { "data": "student_attandance" },
+                { "data": "created_at" },
+                { "data": "updated_at" },
+            ]
+        });
+            
 </script>
 {% endblock %}

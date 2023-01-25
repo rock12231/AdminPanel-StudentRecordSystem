@@ -10,13 +10,6 @@ class StudentAttandance(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
-             
-    # def __init__() -> None:
-    #     student_name = randstr()
-        
-    # date=datetime.date(randint(2005,2025), randint(1,12),randint(1,28))
-    # print
-# d1 = datetime.strptime('1/1/2008 1:30 PM', '%m/%d/%Y %I:%M %p')
-# d2 = datetime.strptime('1/1/2009 4:50 AM', '%m/%d/%Y %I:%M %p')
-
-# print(random_date(d1, d2))
+    def getAllStudentByDate(m,y):
+        return StudentAttandance.objects.filter(updated_at__month=m,updated_at__year=y)
+    

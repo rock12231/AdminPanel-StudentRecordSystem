@@ -26,32 +26,25 @@ class HomeView(LoginRequiredMixin,View):
     redirect_field_name = 'login'
     def get(self, request):
         totalstudent = User.objects.all().exclude(is_superuser=True).count()
-        preset_students = StudentAttandance.objects.filter(student_attandance=True).count()
-        absebt_students = StudentAttandance.objects.filter(student_attandance=False).count()
+        student = StudentAttandance.getAllStudentByDate(1,2022)
+        preset_students = student.filter(student_attandance=True).count()
+        absebt_students = student.filter(student_attandance=False).count()
         total_record = preset_students + absebt_students
-        start_date = StudentAttandance.objects.all().order_by('created_at').first().created_at
-        last_date = StudentAttandance.objects.all().order_by('created_at').last().created_at
+        start_date = student.order_by('created_at').first().created_at
+        last_date = student.order_by('created_at').last().created_at
         listdata = []
         for i in range(1,30):
-            OneDayPresentStudent = StudentAttandance.objects.filter(updated_at__month=1,updated_at__day=i,updated_at__year=2022,student_attandance=False).count()
+            OneDayPresentStudent = student.filter(updated_at__day=i,student_attandance=True).count()
             listdata.append(OneDayPresentStudent)
-        # print(listdata,"<<<<< List Data")
-        # print(OneDayPresentStudent,"<<<<< One DAY")
-        # list_of_absent_day_by_day  StudentAttandance.objects.filter(created_at__day=1).count()
-        # jan = StudentAttandance.objects.filter(created_at__day=1).count()
-        # print(jan,"<<<<< Count of jan")
-        #One month student data fetch
-        OneMonthStudent = StudentAttandance.objects.filter(updated_at__month=1,updated_at__year=2022).values()
-        # OneMonthStudent attendance false to 0 and true to 1 date to string
+        OneMonthStudent = student.values()
         for i in OneMonthStudent:
-            if i['student_attandance'] == False:
-                i['student_attandance'] = 0
+            if i['student_attandance'] == True:
+                i['student_attandance'] = "Present"
             else:
-                i['student_attandance'] = 1
-            i['updated_at'] = i['updated_at'].strftime("%d-%m-%Y")
-            i['created_at'] = i['created_at'].strftime("%d-%m-%Y")
-        
-        print(OneMonthStudent,"<<<<< One Month")
+                i['student_attandance'] = "Absent"
+            i['updated_at'] = i['updated_at'].strftime("%d-%m-%Y %H:%M:%S")
+            i['created_at'] = i['created_at'].strftime("%d-%m-%Y %H:%M:%S")
+            
         context = {
             "total":totalstudent,
             "present":preset_students,
@@ -60,7 +53,7 @@ class HomeView(LoginRequiredMixin,View):
             "start":start_date,
             "last":last_date,
             "data" :[listdata,[i for i in range(1,30)]],
-            #"month":list(OneMonthStudent)
+            "month":list(OneMonthStudent)
         }
         return render(request, 'Account/index.html',context)
     def post(self, request):
@@ -99,10 +92,8 @@ class LoginView(View,LoginRequiredMixin, UserPassesTestMixin):
     def post(self, request):
         username = request.POST.get('username')
         password = request.POST.get('password')
-        print(username, password)
         user = authenticate(request, username=username, password=password)
         self.test_func()
-        print(self.test_func(),"<<< Function")
         if user is not None:
             login(request, user)
             print('User is logged in')
