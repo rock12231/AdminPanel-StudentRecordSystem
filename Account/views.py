@@ -4,9 +4,18 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from Account.models import StudentAttendance
 from django.contrib.auth.models import User
+import datetime
+from django.conf import settings
+from django.utils.timezone import make_aware
 from django.db.models import Count
 from django.contrib import messages
 
+naive_datetime = datetime.datetime.now()
+naive_datetime.tzinfo
+
+settings.TIME_ZONE
+aware_datetime = make_aware(naive_datetime)
+aware_datetime.tzinfo 
 
 # Names = ['Beautiful Olinger', 'Maleyah Cothran', 'Mercedes Comer', 'Yanuel Foor', 'Dalia Munson', 'Justus Stribling', 'Ammy Garduno', 'Sicily Krantz', 'Austynn Turgeon', 'Loic Thiessen', 'Gryphon Stork', 'Sohum Hanke', 'Zariya Sandberg', 'Rishan Raphael', 'Marko Hardman', 'Aadi Sim', 'Ellis Diehl', 'Vail Natale', 'Kayana Villalba', 'Jayne Loftus', 'Ihsan Hovis', 'October Brockway', 'Hernan Howes', 'Shneur Meece', 'Zola Menard', 'Audric Schmucker', 'Jaziyah Nowicki', 'Taha Rohrer', 'Devion Graybill', 'Mayeli Geis', 'Boone Arevalo', 'Ryett Christner', 'Jayce Greene', 'Kolsen Rupe', 'Rivan Tennison', 'Jasmyn Snipes', 'Quinlan Stamm', 'Chris Cleveland', 'Everest Helman', 'Rylin Czarnecki', 'Kruz Christianson', 'Violett Godsey', 'Haven Tanner', 'Mahalia Gregor', 'Sholom Weinberger', 'Grettel Hock', 'Kaine South', 'Tariq Bergstrom', 'Rey Coe', 'Therese Baskin', 'Mariela Cyr', 'Helaina Madson', 'Karianna Bridwell', 'Jaykob Vital', 'Mendy Jacobi', 'Noemie Bono', 'Joslynn Lerma', 'Jovanni Banuelos', 'Dashiell Carrier', 'Allie Mckenzie', 'Moussa Ito', 'Makynlee Vicente', 'Terran Mitchum', 'Janel Nowakowski', 'Trenton Beard', 'Taleah Shinn', 'Randolph Etter', 'Makiyah Coyne', 'Rowyn Bloodworth', 'Armand Herd', 'Aariz Dionne', 'Maddy Mikesell', 'Jaia Brisson', 'Carma Frisbie', 'Karmello Lavergne', 'Kaitlynn Osorio', 'Lucianna Sisco', 'Kaison Thorpe', 'Ivie Towns', 'Khari Omeara', 'Edison Helton', 'Yisroel Hearn', 'Kristy Boring', 'Azaleah Farah', 'Mercer Hannigan', 'Andrew Hill', 'Akhil Rodas', 'Jamin Stanek', 'Maylin Brandenburg', 'Romel Scholz', 'Josefina Munguia', 'Cree Suzuki', 'Brithany Lazar', 'Deegan Harp', 'Gretel Mickey', 'Delphine Hatley', 'Maiya Cornwell', 'Kameren Files', 'Kobi Torrey', 'Tyson Christian', 'Aleeyah Staten', 'Karely Sessions', 'Arian Wroblewski', 'Sohan Goodale', 'Noreen Navarrette', 'Riggs Trainor', 'Aahan Vancamp', 'Azaria Blount', 'Sayuri Landa', 'Hillary Shanks', 'Ryden Canada', 'Letty Hammons', 'Treasure Fagan', 'Brantley Hershey', 'Lyric Chase', 'Brisa Vallejo', 'Taraji Hooks', 'Leobardo Dufresne', 'Anayah Brito', 'Chloe Peterson', 'Nyla Andrade', 'Aayush Mosier', 'Amorie Moretti', 'Lexie Gee', 'Carmyn Beaman', 'Dash Timmons', 'Austen Libby', 'Alyana Pedraza', 'Braylon Huynh', 'Eddison Tarin', 'Kallan Leonardo', 'Nami Dey', 'Melisa Tarr', 'Evyn Philip', 'Shayaan Bunton', 'Amaru Depasquale', 'Jenai Caffrey', 'Elie Delapena', 'Benjamin Moore', 'Aydrian Belisle', 'Adalind Frame', 'Maryana Reveles', 'Kaycen Cravens', 'Dashawn Mccallum', 'Johnnie Schiff', 'Shilah Peachey', 'Nori Vest', 'Lennon Goff', 'Aniyla Dinkins', 'Tysen Bodnar', 'Zayra Rude', 'Norberto Sealy', 'Imogen Dorman', 'Eugenia Korte', 'Samuel Allen', 'Ryder Boyd', 'Lillyan Denham', 'Chancellor Hutchings', 'Tayden Landrum', 'Tate Cisneros', 'Daysi Sill', 'Llewyn Desmarais', 'Easton Ellis', 'Asiyah Ballesteros', 'Scotlynn Backer', 'Haydee Trusty', 'Rain Peter', 'Chany Brotherton', 'Nadiyah Privett', 'Ishmael Hopson', 'Lamiya Alejo', 'Ben Miner', 'Jhene Almonte', 'Rajon Spiker', 'Yusuf Madison', 'Dixie Wiseman', 'Rosalina Hostetler', 'Yessica Sundberg', 'Harmony Francis', 'Santos Woodson', 'Yelena Kight', 'Subhan Harner', 'Favian Beecher', 'Darron Comfort', 'Sirius Rhyne', 'Xoe Binion', 'Cruze Shivers', 'Saint Cavender', 'Markeith Mathewson', 'Graison Hallam', 'Kashton Deluca', 'Ayush Falls', 'Mabel Connolly', 'Harmonie Holton', 'Dawsyn Laurence', 'Marelyn Kiss', 'Dalary Coyle', 'Braelynn Dudley', 'Katherin Burgin', 'Ayumi Brockett']
 
@@ -16,9 +25,7 @@ class HomeView(LoginRequiredMixin,View):
     redirect_field_name = 'login'
     def get(self, request):
         totalstudent = User.objects.all().exclude(is_superuser=True).count()
-        test = StudentAttendance.objects.all().values()[:10]
-        print(test)
-        student = StudentAttendance.getByMonth(1,2022)
+        student = StudentAttendance.getByMonth(2,2022)
         preset_students = student.filter(student_attandance=True).count()
         absebt_students = student.filter(student_attandance=False).count()
         
@@ -47,7 +54,7 @@ class HomeView(LoginRequiredMixin,View):
         
         return render(request, 'Account/index.html',context)
     def post(self, request):
-        student = StudentAttendance.getByMonth(1,2022)
+        student = StudentAttendance.getByMonth(2,2022)
         totalstudent = User.objects.all().exclude(is_superuser=True).count()
         print(request.POST.get("form_type"),"<<<<Form Type")
         if request.POST.get("form_type") == 'formAddStudent':
@@ -70,7 +77,7 @@ class HomeView(LoginRequiredMixin,View):
             enddate = request.POST.get('date2')
             time = request.POST.get('time')
             subject = request.POST.get('standard')
-            print(date,"<<<<Date")
+            print(enddate,"<<<<Date")
             print(subject,"<<<<Subject")
             # try:
             student = StudentAttendance.searchData(name,date,startdate,enddate,time,subject)
