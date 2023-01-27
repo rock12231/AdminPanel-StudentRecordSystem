@@ -4,7 +4,11 @@ Chart.defaults.global.defaultFontColor = '#292b2c';
 
 // Area Chart Example
 const mydata = JSON.parse(document.getElementById('mydata').textContent);
-console.log(mydata);
+let number = mydata[2];
+let digitCount = mydata[2].toString().length;
+let x = Math.pow(10, digitCount - 1);
+let rounded = Math.floor(number / x) * x;
+
 var ctx = document.getElementById("myAreaChart");
 var myLineChart = new Chart(ctx, {
   type: 'line',
@@ -41,7 +45,7 @@ var myLineChart = new Chart(ctx, {
       yAxes: [{
         ticks: {
           min: 0,
-          max: 120,
+          max: rounded,
           maxTicksLimit: 10
         },
         gridLines: {

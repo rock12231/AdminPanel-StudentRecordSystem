@@ -1,5 +1,6 @@
 {% extends "Account/base.html" %}
 {% load static %}
+{% load filter %}
 
 {% block title %}Dashboard{% endblock %}
 <!-- is_authenticated -->
@@ -59,7 +60,7 @@
                 <div class="card bg-info text-white mb-4">
                     <div class="card-body">From Date</div>
                     <div class="card-footer d-flex align-items-center justify-content-between">
-                        <h5>{{start}}</h5>
+                        <h5>{{start.created_at}}</h5>
                         <!-- <a class="small text-white stretched-link" href="#">View Details</a> -->
                         <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                     </div>
@@ -69,7 +70,7 @@
                 <div class="card bg-dark text-white mb-4">
                     <div class="card-body">To Date</div>
                     <div class="card-footer d-flex align-items-center justify-content-between">
-                        <h5>{{last}}</h5>
+                        <h5>{{last.created_at}}</h5>
                         <!-- <a class="small text-white stretched-link" href="#">View Details</a> -->
                         <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                     </div>
@@ -82,12 +83,12 @@
                 <div class="card mb-4">
                     <div class="card-header">
                         <i class="fas fa-tools me-1"></i>
-                        Area Chart Example
+                        Add & Filter
                     </div>
-                    <div class="card-body">
+                    <div class="card-body d-flex justify-content-around">
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class='fas fa-tools'></i>&nbsp;Add</button>
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#attandance"><i class='fas fa-search'></i>&nbsp;Attandance</button>
-                        <button type="button" class="btn btn-secondary"><i class='fas fa-tools'></i>&nbsp;Search</button>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#search"><i class='fas fa-search'></i>&nbsp;Search</button>
+                        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#attandance"><i class='fas fa-user'></i>&nbsp;Attandance</button>
                     </div>
                 </div>
             </div>
@@ -122,12 +123,15 @@
                 <table id="datatablesSimple">
                     <thead>
                         <tr>
-                            <th>Student Id</th>
-                            <th>Student Roll</th>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Roll No</th>
                             <th>Class</th>
                             <th>Atandance</th>
                             <th>Created</th>
                             <th>Updated</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -147,10 +151,10 @@
                 <h5 class="modal-title" id="staticBackdropLabel">Add New Student</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form method="post">
+            <form method="post" id="formAddStudent">
                 {% csrf_token %}
+                <input type="hidden" name="form_type" value="formAddStudent">
                 <div class="modal-body">
-                
                     <input class="form-control my-2" type="text" placeholder="Username" aria-label="default" name="username">
                     <input class="form-control my-2" type="email" placeholder="Email Id" aria-label="default" name="email">
                     <input class="form-control my-2" type="text" placeholder="First Name" aria-label="default" name="last_name">
@@ -158,7 +162,44 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <a type="submit" class="btn btn-primary">Save</a>
+                    <input type="submit" class="btn btn-primary" value="Save">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="search" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="" method="post" id="formSearch">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="formSearch">
+                <div class="modal-body">
+                    <input class="form-control my-2" type="text" name="name" placeholder="Name">
+                    <label for="">Date</label>
+                    <input class="form-control my-2" type="date" name="date" placeholder="Date">
+                    <label for="">Date From</label>
+                    <input class="form-control my-2" type="date" name="date1" placeholder="Date">
+                    <label for="">Date To</label>
+                    <input class="form-control my-2" type="date" name="date2" placeholder="Date">
+                    <input class="form-control my-2" type="time" name="time" placeholder="Time">
+                    <label for="DataList" class="form-label my-2">Select Subject list</label>
+                    <input type="email" class="form-control" list="datalistOptionsList" id="DataList" placeholder="Type to search...">
+                    <datalist id="datalistOptionsList">
+                        <option value="MCA">
+                        <option value="CS">
+                        <option value="IT">
+                    </datalist>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Search</button>
                 </div>
             </form>
         </div>
@@ -170,37 +211,29 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                <h5 class="modal-title" id="staticBackdropLabel">Attandance</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="" method="post">
+            <form method="post" id="formAttandance">
                 {% csrf_token %}
+                <input type="hidden" name="form_type" value="formAttandance">
                 <div class="modal-body">
-                
-                    <input class="form-control my-2" type="date" name="date" id="date">
-                    <input class="form-control" type="text" placeholder="Default input" aria-label="default input example">
-                    
-                    <select class="form-select my-2" aria-label="Default" name="stander">
-                        <option selected>Open this select menu</option>
-                        <option value="MCA">MCA</option>
-                        <option value="CS">CS</option>
-                        <option value="IT">IT</option>
-                    </select>
-
                     <label for="exampleDataList" class="form-label my-2">Datalist example</label>
                     <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Type to search...">
                     <datalist id="datalistOptions">
+                        {% for user in month %}
+                        <option value="{{user.student_roll}}"></option>
+                        {% endfor %}
                         <option value="San Francisco">
                         <option value="New York">
                         <option value="Seattle">
                         <option value="Los Angeles">
                         <option value="Chicago">
                     </datalist>
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <input type="submit" class="btn btn-primary" vlaue="Save">
                 </div>
             </form>
         </div>
@@ -210,15 +243,38 @@
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
 <script>
+    function editdata(id, name) {
+        console.log(id, name);
+    }
+    function deletedata(id) {
+     console.log(id);
+    }
+
     $('#datatablesSimple').DataTable({
             data: {{ month| safe}},
             columns: [
-                { "data": "student_name_id" },
+                { "data": "student_id" },
+                { "data": "student_id__username" },
                 { "data": "student_roll" },
                 { "data": "student_class" },
                 { "data": "student_attandance" },
                 { "data": "created_at" },
                 { "data": "updated_at" },
+                {
+                    data: null,
+                    className: "dt-center editor-edit",
+                    orderable: false,
+                    render: (data, type, row) => {
+                        return `<i onclick="editdata(${row.student_id},'${row.student_id__username}')" class="fas  fa-pencil-alt hvr-grow pe"></i>`;
+                    }
+                },
+                {
+                    data: null,
+                    className: "dt-center editor-edit",
+                    render: (data, type, row) => {
+                        return `<i onclick="deletedata(${row.student_id})" class="fas fa-trash hvr-grow pe"></i>`;
+                    }
+                }
             ]
         });
             

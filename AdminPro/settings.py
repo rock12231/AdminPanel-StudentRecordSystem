@@ -27,6 +27,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LANGUAGE_CODE = 'en-us'
+TIME_ZONE =  'Asia/Kolkata'
+USE_I18N = True
+USE_L10N = True
+USE_TZ = False
+DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 # Application definition
 
